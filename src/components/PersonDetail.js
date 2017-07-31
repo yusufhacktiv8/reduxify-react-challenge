@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { getPerson, resetPerson } from '../actions';
 
-const SWAPI_URL = 'https://swapi.co/api/people';
 class PersonDetail extends Component {
 
   constructor(props) {
@@ -12,17 +12,13 @@ class PersonDetail extends Component {
     };
   }
 
-  componentDidMount() {
-    axios.get(`${SWAPI_URL}/${this.props.match.params.id}/`)
-    .then((response) => {
-      this.setState({
-        person: response.data,
-      });
-    });
+  componentWillMount() {
+    this.props.resetPerson();
+    this.props.getPerson(this.props.match.params.id);
   }
 
   render() {
-    const person = this.state.person || {};
+    const person = this.props.person;
     return (
       <div className="PersonDetail">
         <div>{person.name}</div>
@@ -32,4 +28,26 @@ class PersonDetail extends Component {
   }
 }
 
-export default PersonDetail;
+const mapStateToProps = (state) => {
+  return {
+    person: state.person,
+  };
+};
+
+const mapDispatchToProps = (disptach) => {
+  return {
+    getPerson: (id) => {
+      disptach(getPerson(id));
+    },
+    resetPerson: () => {
+      disptach(resetPerson());
+    },
+  };
+};
+
+const personDetailContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PersonDetail);
+
+export default personDetailContainer;

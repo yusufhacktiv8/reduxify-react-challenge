@@ -18,3 +18,26 @@ export const getPeople = () => {
   };
 };
 
+export const loadPerson = (person) => {
+  return {
+    type: 'LOAD_PERSON',
+    person,
+  };
+};
+
+export const resetPerson = () => {
+  return {
+    type: 'LOAD_PERSON',
+    person: {},
+  };
+};
+
+export const getPerson = (id) => {
+  return (dispatch) => {
+    axios.get(`${SWAPI_URL}/${id}`)
+    .then((response) => {
+      dispatch(loadPerson(response.data));
+    });
+  };
+};
+
